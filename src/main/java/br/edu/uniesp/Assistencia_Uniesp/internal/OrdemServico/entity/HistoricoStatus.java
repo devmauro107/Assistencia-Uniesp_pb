@@ -1,9 +1,6 @@
 package br.edu.uniesp.Assistencia_Uniesp.internal.OrdemServico.entity;
 
-import br.edu.uniesp.Assistencia_Uniesp.internal.OrdemServico.enums.Prioridade;
 import br.edu.uniesp.Assistencia_Uniesp.internal.OrdemServico.enums.StatusOrdemServico;
-import br.edu.uniesp.Assistencia_Uniesp.internal.equipamento.entity.Equipamento;
-import br.edu.uniesp.Assistencia_Uniesp.internal.tecnico.entity.Tecnico;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,40 +21,30 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_ordem_servico")
+@Table(name = "tb_historico_status")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class OrdemServico {
+public class HistoricoStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private StatusOrdemServico status;
+    @Column(name = "status_anterior", length = 30)
+    private StatusOrdemServico statusAnterior;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Prioridade prioridade;
+    @Column(name = "status_novo", nullable = false, length = 30)
+    private StatusOrdemServico statusNovo;
 
-    @Column(name = "data_abertura", nullable = false)
-    private LocalDateTime dataAbertura;
-
-    @Column(name = "data_conclusao")
-    private LocalDateTime dataConclusao;
-
-    @Column(name = "descricao_defeito", nullable = false, columnDefinition = "TEXT")
-    private String descricaoDefeito;
+    @Column(name = "data_mudanca", nullable = false)
+    private LocalDateTime dataMudanca;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "equipamento_id", nullable = false)
-    private Equipamento equipamento;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tecnico_id")
-    private Tecnico tecnico;
+    @JoinColumn(name = "ordem_servico_id", nullable = false)
+    private OrdemServico ordemServico;
 }
