@@ -35,5 +35,5 @@ O projeto utiliza uma abordagem **Package-by-Feature** sob o namespace `internal
 * [x] Migrações iniciais via Flyway (`V1__criar_tabelas_iniciais.sql`)
 * [x] Mapeamento das entidades fundamentais (`Cliente`, `Equipamento`, `Tecnico`)
 * [ ] Modelagem e fluxo da Ordem de Serviço (`OrdemServico`, `HistoricoStatus`)
-* [ ] Camada de regras de negócio (`Service`) e APIs (`Controller`)
+* [ ] Camada de regras de negócio (`ClienteServiceTest`) e APIs (`Controller`)
 * [ ] Testes automatizados com JUnit 5 e Mockito

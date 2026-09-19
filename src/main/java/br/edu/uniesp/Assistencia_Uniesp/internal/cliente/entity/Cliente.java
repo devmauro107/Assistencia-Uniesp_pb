@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "tb_cliente")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Cliente {
@@ -36,4 +36,11 @@ public class Cliente {
 
     @Column(nullable = false)
     private Boolean ativo = Boolean.TRUE;
+
+    public Cliente(String nome, String cpf, String email) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+        this.ativo = Boolean.TRUE;
+    }
 }

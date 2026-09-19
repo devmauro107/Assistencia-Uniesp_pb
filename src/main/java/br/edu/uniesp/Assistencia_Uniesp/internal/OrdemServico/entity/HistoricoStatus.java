@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tb_historico_status")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")

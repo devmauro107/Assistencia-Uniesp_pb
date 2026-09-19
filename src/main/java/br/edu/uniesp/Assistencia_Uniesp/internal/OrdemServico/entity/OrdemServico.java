@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tb_ordem_servico")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")

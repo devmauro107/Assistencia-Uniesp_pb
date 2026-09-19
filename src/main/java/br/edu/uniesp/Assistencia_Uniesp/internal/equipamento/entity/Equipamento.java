@@ -19,7 +19,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "tb_equipamento")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
