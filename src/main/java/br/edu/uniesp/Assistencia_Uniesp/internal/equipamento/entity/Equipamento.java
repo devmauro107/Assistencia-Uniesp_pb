@@ -10,16 +10,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "tb_equipamento")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Equipamento {
@@ -28,19 +28,50 @@ public class Equipamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 80)
     private String tipo;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 80)
     private String marca;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String modelo;
 
-    @Column(name = "numero_serie", nullable = false, unique = true, length = 100)
+    @Column(name = "numero_serie", unique = true, length = 100)
     private String numeroSerie;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Column(length = 255)
+    private String descricaoProblema;
+
+    @Column(nullable = false)
+    private Boolean ativo = Boolean.TRUE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
+    public Equipamento(String tipo, String marca, String modelo, String numeroSerie, String descricaoProblema, Cliente cliente) {
+        this.tipo = tipo;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.numeroSerie = numeroSerie;
+        this.descricaoProblema = descricaoProblema;
+        this.cliente = cliente;
+        this.ativo = Boolean.TRUE;
+    }
+
+    public void atualizarDados(String tipo, String marca, String modelo, String numeroSerie, String descricaoProblema, Cliente cliente) {
+        this.tipo = tipo;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.numeroSerie = numeroSerie;
+        this.descricaoProblema = descricaoProblema;
+        if (cliente != null) {
+            this.cliente = cliente;
+        }
+    }
+
+    public void inativar() {
+        this.ativo = Boolean.FALSE;
+    }
 }

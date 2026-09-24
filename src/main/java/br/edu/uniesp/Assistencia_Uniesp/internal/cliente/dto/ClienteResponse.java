@@ -2,14 +2,14 @@ package br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto;
 
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.entity.Cliente;
 
-public record ClienteResponseDTO(
+public record ClienteResponse(
         Long id,
         String nome,
         String cpf,
         String email,
         Boolean ativo
 ) {
-    public ClienteResponseDTO(Cliente cliente) {
+    public ClienteResponse(Cliente cliente) {
         this(
                 cliente.getId(),
                 cliente.getNome(),

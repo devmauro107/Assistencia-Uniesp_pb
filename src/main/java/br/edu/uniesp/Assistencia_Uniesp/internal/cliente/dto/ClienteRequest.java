@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
-public record ClienteRequestDTO(
+public record ClienteRequest(
         @NotBlank(message = "{cliente.nome.obrigatorio}")
         @Size(min = 3, max = 100, message = "{cliente.nome.tamanho}")
         String nome,

@@ -2,8 +2,8 @@ package br.edu.uniesp.Assistencia_Uniesp.internal.cliente.service;
 
 import br.edu.uniesp.Assistencia_Uniesp.config.exception.RecursoNaoEncontradoException;
 import br.edu.uniesp.Assistencia_Uniesp.config.exception.RegraNegocioException;
-import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteRequestDTO;
-import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteResponseDTO;
+import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteRequest;
+import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteResponse;
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.entity.Cliente;
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
 
     @Transactional
-    public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
+    public ClienteResponse cadastrar(ClienteRequest dto) {
         String cpfLimpo = sanitizarCpf(dto.cpf());
         String emailSanitizado = sanitizarEmail(dto.email());
         String nomeSanitizado = dto.nome().trim();
@@ -26,53 +26,40 @@ public class ClienteService {
         validarUnicidadeCadastro(cpfLimpo, emailSanitizado);
 
         Cliente novoCliente = new Cliente(nomeSanitizado, cpfLimpo, emailSanitizado);
-        novoCliente.setNome(nomeSanitizado);
-        novoCliente.setCpf(cpfLimpo);
-        novoCliente.setEmail(emailSanitizado);
-        novoCliente.setAtivo(Boolean.TRUE);
 
         Cliente salvo = clienteRepository.save(novoCliente);
-        return new ClienteResponseDTO(salvo);
+        return new ClienteResponse(salvo);
     }
 
     @Transactional(readOnly = true)
-    public Page<ClienteResponseDTO> listarTodos(Pageable pageable) {
+    public Page<ClienteResponse> listarTodos(Pageable pageable) {
         return clienteRepository.findAll(pageable)
-                .map(ClienteResponseDTO::new);
+                .map(ClienteResponse::new);
     }
 
-    @Transactional(readOnly = true)
-    public ClienteResponseDTO buscarPorId(Long id) {
+    public ClienteResponse buscarPorId(Long id) {
         Cliente cliente = buscarEntidadePorId(id);
-        return new ClienteResponseDTO(cliente);
+        return new ClienteResponse(cliente);
     }
 
     @Transactional
-    public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
-        Cliente clienteExistente = buscarEntidadePorId(id);
+    public ClienteResponse atualizar(Long id, ClienteRequest dto) {
+        Cliente cliente = clienteRepository.findById(id)
+                .filter(Cliente::getAtivo)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado ou inativo com o ID: " + id));
 
-        String cpfLimpo = sanitizarCpf(dto.cpf());
-        String emailSanitizado = sanitizarEmail(dto.email());
+        cliente.atualizarDados(dto.nome().trim(), dto.email().trim().toLowerCase());
 
-        if (!clienteExistente.getCpf().equals(cpfLimpo) && clienteRepository.existsByCpf(cpfLimpo)) {
-            throw new RegraNegocioException("CPF já cadastrado para outro cliente.");
-        }
-
-        if (!clienteExistente.getEmail().equalsIgnoreCase(emailSanitizado) && clienteRepository.existsByEmail(emailSanitizado)) {
-            throw new RegraNegocioException("E-mail já cadastrado para outro cliente.");
-        }
-
-        clienteExistente.setNome(dto.nome().trim());
-        clienteExistente.setCpf(cpfLimpo);
-        clienteExistente.setEmail(emailSanitizado);
-
-        return new ClienteResponseDTO(clienteExistente);
+        return new ClienteResponse(cliente);
     }
 
     @Transactional
     public void inativar(Long id) {
-        Cliente cliente = buscarEntidadePorId(id);
-        cliente.setAtivo(Boolean.FALSE);
+        Cliente cliente = clienteRepository.findById(id)
+                .filter(Cliente::getAtivo)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado ou inativo com o ID: " + id));
+
+        cliente.inativar();
     }
 
     private Cliente buscarEntidadePorId(Long id) {

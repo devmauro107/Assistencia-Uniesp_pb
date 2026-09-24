@@ -15,10 +15,14 @@ CREATE TABLE tb_tecnico (
 
 CREATE TABLE tb_equipamento (
     id BIGSERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL,
-    marca VARCHAR(50) NOT NULL,
-    modelo VARCHAR(50) NOT NULL,
-    numero_serie VARCHAR(100) NOT NULL UNIQUE,
+    tipo VARCHAR(80) NOT NULL,
+    marca VARCHAR(80) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    numero_serie VARCHAR(100) UNIQUE,
+    descricao_problema VARCHAR(255),
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
     cliente_id BIGINT NOT NULL,
     CONSTRAINT fk_equipamento_cliente FOREIGN KEY (cliente_id) REFERENCES tb_cliente(id)
 );
+
+CREATE INDEX idx_equipamento_cliente_id ON tb_equipamento(cliente_id);

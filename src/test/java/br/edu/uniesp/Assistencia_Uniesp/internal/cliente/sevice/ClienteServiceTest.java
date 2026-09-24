@@ -3,8 +3,8 @@ package br.edu.uniesp.Assistencia_Uniesp.internal.cliente.sevice;
 
 import br.edu.uniesp.Assistencia_Uniesp.config.exception.RecursoNaoEncontradoException;
 import br.edu.uniesp.Assistencia_Uniesp.config.exception.RegraNegocioException;
-import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteRequestDTO;
-import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteResponseDTO;
+import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteRequest;
+import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.dto.ClienteResponse;
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.entity.Cliente;
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.repository.ClienteRepository;
 import br.edu.uniesp.Assistencia_Uniesp.internal.cliente.service.ClienteService;
@@ -38,14 +38,14 @@ class ClienteServiceTest {
     @Test
     @DisplayName("Deve cadastrar cliente com sucesso e sanitizar CPF e e-mail")
     void deveCadastrarClienteComSucesso() {
-        ClienteRequestDTO dto = new ClienteRequestDTO("  Mauro Oliveira  ", "123.456.789-00", "  TESTE@EMAIL.COM  ");
+        ClienteRequest dto = new ClienteRequest("  Mauro Oliveira  ", "123.456.789-00", "  TESTE@EMAIL.COM  ");
         when(clienteRepository.existsByCpf("12345678900")).thenReturn(false);
         when(clienteRepository.existsByEmail("teste@email.com")).thenReturn(false);
 
         Cliente clienteSalvo = new Cliente("Mauro Oliveira", "12345678900", "teste@email.com");
         when(clienteRepository.save(any(Cliente.class))).thenReturn(clienteSalvo);
 
-        ClienteResponseDTO resultado = clienteService.cadastrar(dto);
+        ClienteResponse resultado = clienteService.cadastrar(dto);
 
         assertNotNull(resultado);
         assertEquals("Mauro Oliveira", resultado.nome());
@@ -62,7 +62,7 @@ class ClienteServiceTest {
     @Test
     @DisplayName("Deve lançar RegraNegocioException quando CPF já estiver cadastrado")
     void deveLancarExcecaoQuandoCpfDuplicado() {
-        ClienteRequestDTO dto = new ClienteRequestDTO("Mauro", "123.456.789-00", "teste@email.com");
+        ClienteRequest dto = new ClienteRequest("Mauro", "123.456.789-00", "teste@email.com");
         when(clienteRepository.existsByCpf("12345678900")).thenReturn(true);
 
         assertThrows(RegraNegocioException.class, () -> clienteService.cadastrar(dto));

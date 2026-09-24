@@ -6,17 +6,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "tb_cliente")
 @Getter
-@Setter
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Cliente {
@@ -41,6 +40,19 @@ public class Cliente {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
+        this.ativo = Boolean.TRUE;
+    }
+
+    public void atualizarDados(String nome, String email) {
+        this.nome = nome;
+        this.email = email;
+    }
+
+    public void inativar() {
+        this.ativo = Boolean.FALSE;
+    }
+
+    public void reativar() {
         this.ativo = Boolean.TRUE;
     }
 }
